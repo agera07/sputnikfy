@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Icon, Form, Input } from "semantic-ui-react";
+import { toast } from "react-toastify";
 import { validateEmail } from "../../../utils/Validations";
 import firebase from "../../../utils/Firebase";
 import "firebase/auth";
@@ -53,15 +54,40 @@ export default function RegisterForm(props) {
         .createUserWithEmailAndPassword(formData.email, formData.password)
         .then(() => {
           console.log("Success");
+          changeUserName();
+          sendVerificationEmail();
         })
         .catch(() => {
-          console.log("Error in creating account");
+          toast.error("Error in creating account");
         })
         .finally(() => {
           setisLoading(false);
           setSelectedForm(null);
         });
     }
+  };
+
+  const changeUserName = () => {
+    firebase
+      .auth()
+      .currentUser.updateProfile({
+        displayName: formData.username,
+      })
+      .catch(() => {
+        toast.error("Error! Username alreday taken!");
+      });
+  };
+
+  const sendVerificationEmail = () => {
+    firebase
+      .auth()
+      .currentUser.sendEmailVerification()
+      .then(() => {
+        toast.success("Verification email was sent successfully");
+      })
+      .catch(() => {
+        toast.error("Error to send verification e-mail. ");
+      });
   };
 
   return (
