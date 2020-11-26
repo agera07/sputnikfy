@@ -5,16 +5,13 @@ import { validateEmail } from "../../../utils/Validations";
 import firebase from "../../../utils/Firebase";
 import "firebase/auth";
 import "./LoginForm.scss";
-import { truncate } from "fs";
-import { Z_ERRNO } from "zlib";
-import { errorMonitor } from "stream";
 
 export default function LoginForm(props) {
   const { setSelectedForm } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(defaultValueForm());
   const [formError, setFormError] = useState({});
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [userActive, setUserActive] = useState(true);
   const [user, setUser] = useState(null);
 
@@ -47,18 +44,23 @@ export default function LoginForm(props) {
     setFormError(errors);
 
     if (formOk) {
-      setisLoading(true);
+      setIsLoading(true);
       firebase
         .auth()
         .signInWithEmailAndPassword(formData.email, formData.password)
-        .then(() => {})
+        .then((response) => {
+          setUser(response.user);
+          setUserActive(response.user.emailVerified);
+          if (!response.user.emailVerified) {
+            toast.warning("To access: Please, verify your email ");
+          }
+        })
         .catch((err) => {
           console.log(err);
           handlerErrors(err.code);
         })
         .finally(() => {
-          setisLoading(false);
-          setSelectedForm(null);
+          setIsLoading(false);
         });
     }
   };
@@ -105,13 +107,16 @@ export default function LoginForm(props) {
             </span>
           )}
         </Form.Field>
-        <Button type="submit"> Log in</Button>
+        <Button type="submit" loading={isLoading}>
+          {" "}
+          Log in
+        </Button>
       </Form>
 
       {!userActive && (
-        <buttonResetSendEmailVerification
+        <ButtonResetSendEmailVerification
           user={user}
-          setisLoading={setisLoading}
+          setisLoading={setIsLoading}
           setUserActive={setUserActive}
         />
       )}
@@ -132,7 +137,7 @@ export default function LoginForm(props) {
   );
 }
 
-function buttonResetSendEmailVerification(props) {
+function ButtonResetSendEmailVerification(props) {
   const { user, setisLoading, setUserActive } = props;
 
   const resendVerificationEmail = () => {
@@ -166,7 +171,7 @@ function handlerErrors(code) {
     case "auth/wrong-password":
       toast.warning("Username or Password incorrect");
       break;
-    case "auth/too-many-request":
+    case "auth/too-many-requests":
       toast.warning("Too many email request, wait 2 minutes");
       break;
     case "auth/user-not-found":
