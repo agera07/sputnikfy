@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Menu, Icon } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { isUserAdmin } from "../../utils/Api";
-import BasicModal from "../../components/Modal/BasicModal";
+import BasicModal from "../Modal/BasicModal";
 
 import "./SideBar.scss";
 
@@ -10,8 +10,13 @@ function SideBar(props) {
   const { user, location } = props;
   const [activeMenu, setActiveMenu] = useState(location.pathname);
   const [userAdmin, setUserAdmin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [titleModal, setTitleModal] = useState(null);
+  const [contentModal, setContentModal] = useState(null);
 
-  console.log(userAdmin);
+  useEffect(() => {
+    setActiveMenu(location.pathname);
+  }, [location]);
 
   useEffect(() => {
     isUserAdmin(user.uid).then((response) => {
@@ -21,6 +26,26 @@ function SideBar(props) {
 
   const handlerMenu = (event, menu) => {
     setActiveMenu(menu.to);
+  };
+
+  const handlerModal = (type) => {
+    switch (type) {
+      case "artist":
+        setTitleModal("New Artist");
+        setContentModal(<h2>New Artist Form</h2>);
+        setShowModal(true);
+        break;
+      case "song":
+        setTitleModal("New Song");
+        setContentModal(<h2>New Song Form</h2>);
+        setShowModal(true);
+        break;
+      default:
+        setTitleModal(null);
+        setContentModal(null);
+        setShowModal(null);
+        break;
+    }
   };
 
   return (
@@ -46,17 +71,17 @@ function SideBar(props) {
         </div>
         {userAdmin && (
           <div className="footer">
-            <Menu.Item>
+            <Menu.Item onClick={() => handlerModal("artist")}>
               <Icon name="plus square outline" /> New Artist
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => handlerModal("song")}>
               <Icon name="plus square outline" /> New Song
             </Menu.Item>
           </div>
         )}
       </Menu>
-      <BasicModal show={true} setShow={null} title="Test Title">
-        <h2>Modal content</h2>
+      <BasicModal show={showModal} setShow={setShowModal} title={titleModal}>
+        {contentModal}
       </BasicModal>
     </>
   );

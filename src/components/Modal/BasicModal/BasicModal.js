@@ -5,7 +5,6 @@ import "./BasicModal.scss";
 
 export default function BasicModal(props) {
   const { show, setShow, title, children } = props;
-  console.log(props);
 
   const onClose = () => {
     setShow(false);
@@ -13,10 +12,10 @@ export default function BasicModal(props) {
 
   return (
     <Modal open={show} onClose={onClose} className="basic-modal" size="tiny">
-      <Modal.Headers>
+      <Modal.Header>
         <h3>{title}</h3>
-        <Icon name="close" onClick={onClose}></Icon>
-      </Modal.Headers>
+        <Icon name="close" onClick={onClose} />
+      </Modal.Header>
       <Modal.Content>{children}</Modal.Content>
     </Modal>
   );
