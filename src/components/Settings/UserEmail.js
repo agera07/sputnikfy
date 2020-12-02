@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Form, Input, Icon } from "semantic-ui-react";
 import { toast } from "react-toastify";
 import { reauthenticate } from "../../utils/Api";
+import alertErrors from "../../utils/AlertErrors";
 
 export default function UserEmail(props) {
   const { user, setShowModal, setTitleModal, setContentModal } = props;
@@ -41,17 +42,14 @@ function ChangeEmailForm(props) {
       setShowModal(false);
     } else {
       setIsLoading(true);
-      firebase
-        .auth()
-        .currentUser.updateProfile({ displayName: formData.email })
+      reauthenticate(formData.password)
         .then(() => {
-          setReloadApp((prevState) => !prevState);
           toast.success("Email updated");
           setIsLoading(false);
           setShowModal(false);
         })
-        .catch(() => {
-          toast.error("Something went wrong, try again!");
+        .catch((err) => {
+          alertErrors(err?.code);
           setIsLoading(false);
         });
     }
