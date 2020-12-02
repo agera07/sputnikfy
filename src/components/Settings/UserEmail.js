@@ -4,6 +4,9 @@ import { toast } from "react-toastify";
 import { reauthenticate } from "../../utils/Api";
 import alertErrors from "../../utils/AlertErrors";
 
+import firebase from "../../utils/Firebase";
+import "firebase/auth";
+
 export default function UserEmail(props) {
   const { user, setShowModal, setTitleModal, setContentModal } = props;
 
@@ -15,7 +18,6 @@ export default function UserEmail(props) {
         email={user.email}
         setShowModal={setShowModal}
         displayEmail={user.email}
-        // setReloadApp={setReloadApp}
       />
     );
   };
@@ -25,29 +27,42 @@ export default function UserEmail(props) {
       <h3>Email: {user.email}</h3>
       <Button circular onClick={onEdit}>
         {" "}
-        Update
+        Update Email
       </Button>
     </div>
   );
 }
 
 function ChangeEmailForm(props) {
-  const { email, setShowModal, setReloadApp } = props;
+  const { email, setShowModal } = props;
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = () => {
     if (!formData.email) {
-      setShowModal(false);
+      toast.warning("Something went wrong, please try with other email!");
     } else {
       setIsLoading(true);
       reauthenticate(formData.password)
         .then(() => {
-          toast.success("Email updated");
-          setIsLoading(false);
-          setShowModal(false);
+          const currentUser = firebase.auth().currentUser;
+          currentUser
+            .updateEmail(formData.email)
+            .then(() => {
+              toast.success("Email was updated!");
+              setIsLoading(false);
+              setShowModal(false);
+              currentUser.sendEmailVerification().then(() => {
+                firebase.auth().signOut();
+              });
+            })
+            .catch((err) => {
+              alertErrors(err?.code);
+              setIsLoading(false);
+            });
         })
+
         .catch((err) => {
           alertErrors(err?.code);
           setIsLoading(false);
