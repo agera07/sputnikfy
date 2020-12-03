@@ -3,6 +3,7 @@ import { Menu, Icon } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { isUserAdmin } from "../../utils/Api";
 import BasicModal from "../Modal/BasicModal";
+import AddArtistForm from "../Artists/AddArtistForm";
 
 import "./SideBar.scss";
 
@@ -32,7 +33,7 @@ function SideBar(props) {
     switch (type) {
       case "artist":
         setTitleModal("New Artist");
-        setContentModal(<h2>New Artist Form</h2>);
+        setContentModal(<AddArtistForm setShowModal={setShowModal} />);
         setShowModal(true);
         break;
       case "song":
