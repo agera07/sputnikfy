@@ -3,8 +3,14 @@ import { Form, Input, Button, Image } from "semantic-ui-react";
 import { useDropzone } from "react-dropzone";
 import NoImage from "../../../../src/assests/png/no-image.png";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+import firebase from "../../../utils/Firebase";
+import "firebase/storage";
+import "firebase/firestore";
 
 import "./AddArtistForm.scss";
+
+const db = firebase.firestore(firebase);
 
 export default function AddArtistForm(props) {
   const { setShowModal } = props;
@@ -25,6 +31,11 @@ export default function AddArtistForm(props) {
     onDrop,
   });
 
+  const uploadImage = (fileName) => {
+    const ref = firebase.storage().ref().child(`artist/${fileName}`);
+    return ref.put(file);
+  };
+
   const onSubmit = () => {
     if (!formData.name) {
       toast.warning("Add artist's name please");
@@ -32,8 +43,33 @@ export default function AddArtistForm(props) {
       toast.warning("Add artist's image please");
     } else {
       setisLoading(true);
+      const fileName = uuidv4();
+      uploadImage(fileName)
+        .then(() => {
+          db.collection("artists")
+            .add({ name: formData.name, banner: fileName })
+            .then(() => {
+              toast.success("Arstis was created!");
+              resetForm();
+              setisLoading(false);
+              setShowModal(false);
+            })
+            .catch(() => {
+              toast.error("Oops! Error in creating artist!");
+              setisLoading(false);
+            });
+        })
+        .catch(() => {
+          toast.error("Oops! Something happened try again please!");
+          setisLoading(false);
+        });
     }
-    // setShowModal(false);
+  };
+
+  const resetForm = () => {
+    setFormData(initialValueForm());
+    setFile(null);
+    setBanner(null);
   };
 
   return (
