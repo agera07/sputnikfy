@@ -15,13 +15,11 @@
     &:last-of-type {
       height: 10vh;
     }
-  }
-
-  > .column {
-    padding: 0;
+    > .column {
+      padding: 0;
+    }
   }
 
   .content {
-    padding: 0;
   }
 }
