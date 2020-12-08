@@ -2,7 +2,9 @@
 
 .top-bar {
   height: 50px;
-  background-color: $background-grey-dark-light;
+  // background-color: $background-grey-dark-light;
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;

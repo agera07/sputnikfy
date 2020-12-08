@@ -10,7 +10,7 @@ import "./Home.scss";
 const db = firebase.firestore(firebase);
 
 export default function Home() {
-  const [artists, setAstists] = useState([]);
+  const [artists, setArtists] = useState([]);
 
   useEffect(() => {
     db.collection("artists")
@@ -22,7 +22,7 @@ export default function Home() {
           data.id = artist.id;
           arrayArtists.push(data);
         });
-        setAstists(arrayArtists);
+        setArtists(arrayArtists);
       });
   }, []);
 
@@ -30,7 +30,11 @@ export default function Home() {
     <>
       <BannerHome />
       <div className="home">
-        <BasicSliderItems title="Last Artists" data={artists} />
+        <BasicSliderItems
+          title="Last Artists"
+          data={artists}
+          folderImage="artist"
+        />
         <h2>hello world</h2>
       </div>
     </>
