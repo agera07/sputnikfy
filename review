@@ -1,0 +1,16 @@
+Review
+Nice Job, keep it up :) 
+
+> General
+Clean up warnings :) 
+how to verify email?
+svg better than pngs (or jpegs)
+where are the tests!
+nice usage of react hooks :) Use always function components when possible.
+I am not really sure what's your code and what's original code :thinks: If you work on PRs, it would be easier.
+Firebase.js contains an apiKey. You should never post credentials, even if they are for testing purposes.
+
+> package.json
+split between devdeps and dependencies
+both package-lock and yarn.lock
+
