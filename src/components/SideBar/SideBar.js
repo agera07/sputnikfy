@@ -4,6 +4,7 @@ import { Link, withRouter } from "react-router-dom";
 import { isUserAdmin } from "../../utils/Api";
 import BasicModal from "../Modal/BasicModal";
 import AddArtistForm from "../Artists/AddArtistForm";
+import AddAlbumForm from "../Albums/AddAlbumForm";
 
 import "./SideBar.scss";
 
@@ -34,6 +35,11 @@ function SideBar(props) {
       case "artist":
         setTitleModal("New Artist");
         setContentModal(<AddArtistForm setShowModal={setShowModal} />);
+        setShowModal(true);
+        break;
+      case "album":
+        setTitleModal("New Album");
+        setContentModal(<AddAlbumForm setShowModal={setShowModal} />);
         setShowModal(true);
         break;
       case "song":
@@ -67,13 +73,24 @@ function SideBar(props) {
             active={activeMenu === "/artists"}
             onClick={handlerMenu}
           >
-            <Icon name="music" /> Artists
+            <Icon name="user" /> Artists
+          </Menu.Item>
+          <Menu.Item
+            as={Link}
+            to="/albums"
+            active={activeMenu === "/albums"}
+            onClick={handlerMenu}
+          >
+            <Icon name="window maximize outline" /> Albums
           </Menu.Item>
         </div>
         {userAdmin && (
           <div className="footer">
             <Menu.Item onClick={() => handlerModal("artist")}>
               <Icon name="plus square outline" /> New Artist
+            </Menu.Item>
+            <Menu.Item onClick={() => handlerModal("album")}>
+              <Icon name="plus square outline" /> New Album
             </Menu.Item>
             <Menu.Item onClick={() => handlerModal("song")}>
               <Icon name="plus square outline" /> New Song
