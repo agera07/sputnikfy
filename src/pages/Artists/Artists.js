@@ -29,7 +29,7 @@ export default function Artists(props) {
 
   return (
     <div className="artists">
-      <h1>Artists......</h1>
+      <h1>Artists</h1>
       <Grid>
         {map(artists, (artist) => (
           <Grid.Column key={artist.id} mobile={8} tablet={4} computer={3}>
