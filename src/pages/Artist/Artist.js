@@ -20,11 +20,12 @@ function Artist(props) {
       .doc(match?.params?.id)
       .get()
       .then((response) => {
-        const data = response.data();
-        data.id = response.id;
-        setArtist(data);
+        // const data = ;
+        // console.log(data.id);
+        // data.id = response.id;
+        setArtist(response.data.id);
       });
-  }, [match]);
+  }, [match?.params?.id]);
 
   useEffect(() => {
     if (artist) {

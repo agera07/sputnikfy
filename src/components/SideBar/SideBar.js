@@ -5,6 +5,7 @@ import { isUserAdmin } from "../../utils/Api";
 import BasicModal from "../Modal/BasicModal";
 import AddArtistForm from "../Artists/AddArtistForm";
 import AddAlbumForm from "../Albums/AddAlbumForm";
+import AddSongForm from "../Songs/AddSongForm";
 
 import "./SideBar.scss";
 
@@ -44,7 +45,7 @@ function SideBar(props) {
         break;
       case "song":
         setTitleModal("New Song");
-        setContentModal(<h2>New Song Form</h2>);
+        setContentModal(<AddSongForm setShowModal={setShowModal} />);
         setShowModal(true);
         break;
       default:
