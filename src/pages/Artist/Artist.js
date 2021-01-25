@@ -20,10 +20,13 @@ function Artist(props) {
       .doc(match?.params?.id)
       .get()
       .then((response) => {
-        // const data = ;
-        // console.log(data.id);
-        // data.id = response.id;
-        setArtist(response.data.id);
+        const data = response.data();
+        console.log(data);
+        console.log("response", response);
+        if (data) {
+          data.id = response.id;
+          setArtist(data);
+        }
       });
   }, [match?.params?.id]);
 

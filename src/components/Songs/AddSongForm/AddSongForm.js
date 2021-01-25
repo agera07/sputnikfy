@@ -3,16 +3,20 @@ import { Form, Input, Button, Icon, Dropdown } from "semantic-ui-react";
 import { useDropzone } from "react-dropzone";
 import firebase from "../../../utils/Firebase";
 import "firebase/firestore";
+import "firebase/storage";
 import { map } from "lodash";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 import "./AddSongForm.scss";
 const db = firebase.firestore(firebase);
 
 export default function AddSongForm(props) {
   const { setShowModal } = props;
-
+  const [formData, setFormData] = useState(initalValueForm());
   const [albums, setAlbums] = useState([]);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     db.collection("album")
@@ -36,18 +40,64 @@ export default function AddSongForm(props) {
     setFile(file);
   });
 
+  const uploadSong = (fileName) => {
+    const ref = firebase.storage().ref().child(`song/${fileName}`);
+    return ref.put(file);
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: ".mp3",
     noKeyboard: true,
     onDrop,
   });
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    if (!formData.name || !formData.album) {
+      toast.warning("File's name and album must be completed!");
+    } else if (!file) {
+      toast.warning("File must be attached!");
+    } else {
+      setIsLoading(true);
+      const fileName = uuidv4();
+      console.log(fileName);
+      uploadSong(fileName)
+        .then(() => {
+          db.collection("songs")
+            .add({
+              name: formData.name,
+              album: formData.album,
+              fileName: fileName,
+            })
+            .then(() => {
+              toast.success("File was uploaded succefully!");
+              resetForm();
+              setIsLoading(false);
+              setShowModal(false);
+            })
+            .catch(() => {
+              toast.error("Error, please try again!");
+              setIsLoading(false);
+            });
+        })
+        .catch(() => {
+          toast.error("Error, please try again!");
+          setIsLoading(false);
+        });
+    }
+  };
 
+  const resetForm = () => {
+    setFormData(initalValueForm());
+    setFile(null);
+    setAlbums([]);
+  };
   return (
     <Form className="add-song-form" onSubmit={onSubmit}>
       <Form.Field>
-        <Input placeholder="Song's name" />
+        <Input
+          placeholder="Song's name"
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        />
       </Form.Field>
       <Form.Field>
         <Dropdown
@@ -56,6 +106,9 @@ export default function AddSongForm(props) {
           selection
           lazyLoad
           options={albums}
+          onChange={(e, data) =>
+            setFormData({ ...formData, album: data.value })
+          }
         />
       </Form.Field>
       <Form.Field>
@@ -75,7 +128,16 @@ export default function AddSongForm(props) {
           </div>
         </div>
       </Form.Field>
-      <Button type="submit">Upload Song</Button>
+      <Button type="submit" loading={isLoading}>
+        Upload Song
+      </Button>
     </Form>
   );
+}
+
+function initalValueForm() {
+  return {
+    name: "",
+    album: "",
+  };
 }

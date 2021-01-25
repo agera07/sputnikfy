@@ -35,7 +35,7 @@ export default function Player(props) {
 
   const onProgress = (data) => {
     setPlayedSeconds(data.playedSeconds);
-    setTotalSeconds(data.playedSeconds);
+    setTotalSeconds(data.loadedSeconds);
   };
 
   return (
