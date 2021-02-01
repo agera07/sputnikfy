@@ -9,7 +9,7 @@ export default function AuthOptions(props) {
     <div className="auth-options">
       <h2>
         {" "}
-        Don't miss your favorites song everywhere you go, try Sputnikfy!{" "}
+        Don't miss your favorites songs everywhere you go, try Sputnikfy!{" "}
       </h2>
       <Button
         className="register"
