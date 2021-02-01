@@ -31,6 +31,7 @@
 
       &:hover {
         color: $primary-color;
+        cursor: pointer;
       }
 
       img {
@@ -44,11 +45,12 @@
     i {
       transition: 0.3s;
       &:hover {
-        cursor: pointer;
+        cursor: pointer !important;
         font-size: 21px;
         transition: 0.3s;
         color: red;
       }
+      color: $primary-color;
     }
   }
 }

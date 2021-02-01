@@ -7,7 +7,10 @@ export default function AuthOptions(props) {
 
   return (
     <div className="auth-options">
-      <h2> Millones de canciones, gratis en Musicfy </h2>
+      <h2>
+        {" "}
+        Don't miss your favorites song everywhere you go, try Sputnikfy!{" "}
+      </h2>
       <Button
         className="register"
         onClick={() => {

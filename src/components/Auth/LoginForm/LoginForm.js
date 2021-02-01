@@ -67,7 +67,7 @@ export default function LoginForm(props) {
 
   return (
     <div className="login-form">
-      <h1>To the Moon with your Music</h1>
+      <h1>To the sky with your music!</h1>
 
       <Form onSubmit={onSubmit} onChange={onChange}>
         <Form.Field>
